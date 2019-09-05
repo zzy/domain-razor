@@ -37,7 +37,7 @@ pub fn send_email(domain_valid: &str) {
 
     let result = emailer.send(&email);
     if !result.is_ok() {
-        println!("发送邮件出错：{:#?}", result);
+        println!("邮件投递错误：{:#?}", result);
     }
     
     emailer.close();
