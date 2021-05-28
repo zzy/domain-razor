@@ -1,11 +1,16 @@
 [package]
-name = "razors"
-version = "0.1.0"
+name = "domain-checker"
+version = "0.1.1"
 authors = ["zzy <9809920@qq.com>"]
 edition = "2018"
+resolver = "2"
 
 [dependencies]
-reqwest = "*"
-select = "*"
-lettre = "*"
-lettre_email = "*"
+fantoccini = "0.17.3"
+lettre = "0.10.0-rc.3"
+
+tokio = { version = "1.6.0", features = ["rt-multi-thread", "macros"] }
+dotenv = "0.15.0"
+
+[profile.dev]
+split-debuginfo = "unpacked"

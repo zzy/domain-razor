@@ -1,44 +1,38 @@
-extern crate lettre;
-extern crate lettre_email;
+use dotenv::dotenv;
 
-use lettre_email::EmailBuilder;
-use lettre::smtp::authentication::{Credentials, Mechanism};
-use lettre::smtp::extension::ClientId;
-use lettre::EmailTransport;
-use lettre::SmtpTransport;
-use lettre::smtp::ConnectionReuseParameters;
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::{Message, SmtpTransport, Transport};
 
-pub fn send_email(domain_valid: &str) {
-    
-    let send_to = vec!["email1@budshome.com", "email2@budshome.com"];
-    let send_from = "email3@budshome.com";
-    let passwd = "your_password";
-    let subject = domain_valid.to_string() + "可注册";
-    let body = domain_valid.to_string() + "可注册";
-    let smtp_server = "smtp.budshome.com"; //"smtp.exmail.qq.com";
+pub async fn send_email(domain_available: &str) {
+    dotenv().ok();
 
-    let mut builder = EmailBuilder::new();
-    for to in send_to {
-        builder.add_to(to);
+    let email_smtp = dotenv::var("email_smtp")
+        .expect("Expected email_smtp to be set in env!");
+    let email_from = dotenv::var("email_from")
+        .expect("Expected email_from to be set in env!");
+    let email_username = dotenv::var("email_username")
+        .expect("Expected email_username to be set in env!");
+    let email_password = dotenv::var("email_password")
+        .expect("Expected email_password to be set in env!");
+    let email_to =
+        dotenv::var("email_to").expect("Expected email_to to be set in env!");
+
+    let email = Message::builder()
+        .from(email_from.parse().unwrap())
+        .to(email_to.parse().unwrap())
+        .subject(domain_available.to_string() + " 可注册")
+        .body(domain_available.to_string())
+        .unwrap();
+
+    let creds = Credentials::new(email_username, email_password);
+
+    // Open a remote connection to qq.com
+    let mailer =
+        SmtpTransport::relay(&email_smtp).unwrap().credentials(creds).build();
+
+    // Send the email
+    match mailer.send(&email) {
+        Ok(_) => println!("Email sent successfully!"),
+        Err(e) => panic!("Could not send email: {:?}", e),
     }
-
-    builder.add_from(send_from);
-    builder.set_subject(subject);
-    builder.set_body(body);
-    let email = builder.build().unwrap();
-
-    let mut emailer = SmtpTransport::simple_builder(smtp_server).unwrap()
-        .smtp_utf8(true)
-        .hello_name(ClientId::Domain("budshome.com".to_string()))
-        .credentials(Credentials::new(send_from.to_string(), passwd.to_string()))
-        .smtp_utf8(true)
-        .authentication_mechanism(Mechanism::Plain)
-        .connection_reuse(ConnectionReuseParameters::ReuseUnlimited).build();
-
-    let result = emailer.send(&email);
-    if !result.is_ok() {
-        println!("邮件投递错误：{:#?}", result);
-    }
-    
-    emailer.close();
 }
