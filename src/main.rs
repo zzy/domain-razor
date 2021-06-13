@@ -4,10 +4,17 @@ use std::fs;
 use std::time::Duration;
 use std::thread::sleep;
 
+use dotenv::dotenv;
 use fantoccini::{ClientBuilder, Locator};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    dotenv().ok();
+
+    let sleep_duration = dotenv::var("sleep_duration")
+        .expect("Expected sleep_duration to be set in env!")
+        .parse::<u64>()?;
+
     // Connect to webdriver instance that is listening on port 4444
     let mut client =
         ClientBuilder::native().connect("http://localhost:4444").await?;
@@ -22,18 +29,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{:?}", &domain_url);
 
         client.goto(&domain_url).await?;
-        sleep(Duration::from_millis(10000));
+        sleep(Duration::from_millis(sleep_duration));
 
         let mut exp_date_div =
             client.find(Locator::Id(r#"expirationDate"#)).await?;
         let exp_date_text = exp_date_div.text().await?;
         println!("{:?}", &exp_date_text);
 
-        if exp_date_text.trim().eq("") {
+        if exp_date_text.trim().eq("sleep_duration") {
             email::send_email(&domain).await;
         }
 
-        sleep(Duration::from_millis(10000));
+        sleep(Duration::from_millis(sleep_duration));
     }
 
     client.close_window().await?;

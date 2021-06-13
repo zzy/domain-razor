@@ -1,11 +1,7 @@
-use dotenv::dotenv;
-
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 
 pub async fn send_email(domain_available: &str) {
-    dotenv().ok();
-
     let email_smtp = dotenv::var("email_smtp")
         .expect("Expected email_smtp to be set in env!");
     let email_from = dotenv::var("email_from")

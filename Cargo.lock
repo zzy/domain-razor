@@ -138,9 +138,9 @@ checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "fantoccini"
-version = "0.17.3"
+version = "0.17.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e49ba709e57aca51a97b5f6a81e5be479dff7739422f10f7292d3aaaa5d2a7a9"
+checksum = "2562697db63f42ec268290fad774ac3cf25908566c94f42ac7eb34752eb1a96d"
 dependencies = [
  "base64 0.13.0",
  "cookie 0.14.4",
@@ -152,6 +152,7 @@ dependencies = [
  "mime",
  "serde",
  "serde_json",
+ "time 0.2.26",
  "tokio",
  "url",
  "webdriver",
@@ -1100,9 +1101,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.6.0"
+version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd3076b5c8cc18138b8f8814895c11eb4de37114a5d127bafdc5e55798ceef37"
+checksum = "0a38d31d7831c6ed7aad00aa4c12d9375fd225a6dd77da1d25b707346319a975"
 dependencies = [
  "autocfg",
  "bytes 1.0.1",
