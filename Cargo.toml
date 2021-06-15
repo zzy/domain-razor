@@ -9,7 +9,7 @@ resolver = "2"
 fantoccini = "0.17.4"
 lettre = "0.10.0-rc.3"
 
-tokio = { version = "1.6.1", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.6.2", features = ["rt-multi-thread", "macros"] }
 dotenv = "0.15.0"
 
 [profile.dev]

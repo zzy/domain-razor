@@ -11,8 +11,11 @@ use fantoccini::{ClientBuilder, Locator};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
-    let sleep_duration = dotenv::var("sleep_duration")
-        .expect("Expected sleep_duration to be set in env!")
+    let sleep_duration_client = dotenv::var("sleep_duration_client")
+        .expect("Expected sleep_duration_client to be set in env!")
+        .parse::<u64>()?;
+    let sleep_duration_email = dotenv::var("sleep_duration_email")
+        .expect("Expected sleep_duration_email to be set in env!")
         .parse::<u64>()?;
 
     // Connect to webdriver instance that is listening on port 4444
@@ -29,18 +32,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{:?}", &domain_url);
 
         client.goto(&domain_url).await?;
-        sleep(Duration::from_millis(sleep_duration));
+        sleep(Duration::from_millis(sleep_duration_client));
 
         let mut exp_date_div =
             client.find(Locator::Id(r#"expirationDate"#)).await?;
         let exp_date_text = exp_date_div.text().await?;
         println!("{:?}", &exp_date_text);
 
-        if exp_date_text.trim().eq("sleep_duration") {
+        if exp_date_text.trim().eq("") {
             email::send_email(&domain).await;
         }
 
-        sleep(Duration::from_millis(sleep_duration));
+        sleep(Duration::from_millis(sleep_duration_email));
     }
 
     client.close_window().await?;
